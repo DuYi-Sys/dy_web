@@ -1,67 +1,19 @@
-(function(){
-    //add cdn link in there please.
-    // 此处添加cdn连接 
-    var cdn = {
-        jquery:"http://libs.baidu.com/jquery/2.0.0/jquery.min.js",
-        san:"https://unpkg.com/san@latest/dist/san.dev.js"
-    }
-    var cdn_ok = {};
-    var cdn_length=0;
-    var oknum = 0;
-    //===========================
-    var all = function (){
-        for(var name_ in cdn){
-            var sp = document.createElement('script');
-            sp.src = cdn[name_];
-            document.head.appendChild(sp);
-            (function () {
-                var names = name_;
-                cdn_ok[names] = "on";
-                sp.onload = function(){
-                    cdn_ok[names] = "ok";
-                    oknum++;
+var DUYI_UI = {};
+DUYI_UI.init_checkbox = function () {
+    var node = document.getElementsByClassName("DUYI_checkbox");
+    for (var i = 0; i < node.length; i++) {
+        (function () {
+            var _i = i;
+            (node[_i].getAttribute("value")) || (node[_i].setAttribute("value", "选择框"));
+            (node[_i].getAttribute("active")) || (node[_i].setAttribute("active", "false"));
+            node[_i].innerHTML = node[_i].getAttribute("value");
+            node[_i].addEventListener("click", function () {
+                if (node[_i].getAttribute("active") == "false") {
+                    node[_i].setAttribute("active", "true")
+                } else {
+                    node[_i].setAttribute("active", "false")
                 }
-            })();
-            cdn_length++;
-        }
-        all = function(){};
+            })
+        })();
     }
-    var others = function (x) {
-            var sp = document.createElement('script');
-            sp.src = cdn[x];
-            document.head.appendChild(sp);
-            cdn_ok[x] = "no";
-            sp.onload = function(){
-                cdn_ok[x] = "ok";
-            }
-    }
-    //==================================
-    // 此处开放了scope域，在这个域里面，你可以
-    window.CDNscope = function(fun,type='all'){
-        if(type == "all"){
-            all();
-            var timer = setInterval(function () {
-                if(cdn_length == oknum){
-                    clearInterval(timer);
-                    fun();
-                }
-            },100);
-        } else {
-            var types = type.split(" ");
-            for(var i in types){
-                (!cdn_ok[types[i]]) && (others(types[i]));
-            }
-            var timer = setInterval(function () {
-                var m = true;
-                for(var i in types){
-                    if(cdn_ok[types[i]] != "ok"){m = false;break;}
-                }
-                (m) && (clearInterval(timer),fun());
-            },100);
-        }
-    }
-})()
-
-// 使用方法：  CDNscope( function (){
-//                  这里写你的代码
-//             }, "这里写你要加载的库，不写或者写all那就默认全部加载" )
+}
